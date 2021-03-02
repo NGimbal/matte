@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
+import * as Y from 'yjs'
+
 // https://gist.github.com/plbowers/7560ae793613ee839151624182133159
 const csvStringToArray = (strData, header=true) =>
 {
@@ -53,13 +55,11 @@ function ImportCSV(props) {
 
   useEffect(() => {
     if(!fileContents.result) return
-    // let data = fileContents.result.split(['\n']).map(arr => arr.split(','))
+
     let data = csvStringToArray(fileContents.result, false)
-    // console.log(data)
+
     data.shift()
-    // console.log(data)
-    // let length = headers.length
-    // console.log(headers)
+    
     // map data to schema
     // eventually can provide a UI to match headers with schema
     let schema = ['format',
@@ -80,13 +80,15 @@ function ImportCSV(props) {
                   'remark']
 
     data = data.map((val,index,arr) => {
-      // if(index === 0) return //skip headers
-      let row = {}
-      val.map((v,i) => row[schema[i]] = v)
+      let row = new Y.Map()
+      val.map((v,i) => row.set(schema[i], v))
       return row
     })
-    // console.log(data)
-    props.setData(data)
+
+    let array = props.doc.get('data', Y.Array)
+    array.delete(0, 1)
+    array.insert(0, data)
+
   },[fileContents.result])
 
   return (
