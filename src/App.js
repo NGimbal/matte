@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-
+import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
 import './App.css';
 
 import styled from 'styled-components'
@@ -65,86 +65,16 @@ const blankRow = {
   remarks: ''
 }
 
-// const yRow = new Y.Map()
-
-// for (let k in blankRow){
-//   yRow.set(k, blankRow[k])
-// }
-
-// const yarray = ydoc.getArray('data')
-
-// yarray.push([yRow])
-
-function useYDoc(){
-  // how does set state deal with complex javscript objects
-  const [ydoc, setYdoc] = useState(new Y.Doc())
-
-  // end point and room name can also be state
-  // const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-roomname', ydoc)
-
-  // wsProvider.on('status', event => {
-  //   console.log(event.status) // logs "connected" or "disconnected"
-  // })
-
-  useEffect(() => {
-    console.log('ydoc updated!')
-  },[ydoc])
-
-  return ydoc
-}
-
-// the idea is to provide a parallel array of data
-// encapsulate logic to efficiently update the array
-function useYArray(name, _ydoc){
-  let yArray
-  if(typeof _ydoc !== 'undefined') {
-    yArray = _ydoc.getArray(name)
-  } else {
-    yArray = new Y.Array()
-  }
-  // const [yArray, setYArray] = useState(yarray)
+const connectDoc = (doc) => {
+  console.log('connect to a provider with room', doc.guid)
+  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room2', doc)
   
-  // var store = []
-
-  // useEffect(() => {
-  //   console.log('yArray updated!')
-  // }, [yArray])
-
-  yArray.observe(yE => {
-    console.log('yArray observe')
-    console.log(yE.changes)
+  wsProvider.on('status', event => {
+    window.alert(event.status)
+    console.log(event.status) // logs "connected" or "disconnected"
   })
-
-  yArray.observeDeep(yE => {
-    console.log('yArray observeDeep')
-    console.log(yE[0].changes)
-    // idea is to make this more efficient using
-    // yE changes to update selectively
-    console.log(yArray)
-    // store = yArray.toJSON()
-  })
-
-  return yArray
-}
-
-function useYMap(name, _ydoc){
-  let ymap
-  if(typeof _ydoc !== 'undefined') {
-    ymap = _ydoc.getMap(name)
-  } else {
-    ymap = new Y.Map()
-  }
-  const [yMap, setYMap] = useState(ymap)
-
-  useEffect(() => {
-    console.log('yMap updated!')
-  }, [yMap])
-
-  yMap.observe(yE => {
-    console.log('yMap observe')
-  })
-
-  return yMap
+  
+  return () => console.log('disconnect', doc.guid)
 }
 
 function App() {
@@ -201,53 +131,39 @@ function App() {
   ],[]
   )
     
-  const ydoc = useYDoc()
-  
-  const yArray = useYArray('table1', ydoc)
-  
-  // const yArray = new Y.Array()
-  const yMap = useYMap()
-
-  for (let k in blankRow){
-    yMap.set(k, blankRow[k])
-  }
-
-  yArray.push([yMap])
-
-  const [data, setData] = React.useState([])
-
-  const mData = React.useMemo(
-    () => [
-      ...data
-    ],
-    [data]
-  )
-
-  useEffect(() => {
-    console.log("data useEffect!")
-    console.log(data)
-  }, [data])
+  const ydoc = useYDoc('docguid', connectDoc)
+  // const { data, push, get, insert, delete , } = useYArray(ydoc.getArray('table1'))
+  const table1 = useYArray(ydoc.getArray('table1'))
 
   const updateMyData = (rowIndex, columnId, value) => {
-    let row = yArray.get(rowIndex)
-    row.set(columnId, value)
+    let row = {...table1['get'](rowIndex)}
+    row[columnId] = value
+    
+    // table1['delete'](rowIndex)
+    // table1['insert'](rowIndex, [row])
+    table1['map']((val, index) => {
+      if(index !== rowIndex) return val
+      let row = {...val}
+      val[columnId] = value
+      return row
+    })
+    console.log('updateMyData')
   }
 
   const addRow = () => {
-    const newRow = new Y.Map()
+    // const row = new Y.Map()
 
-    for (let k in blankRow){
-      newRow.set(k, blankRow[k])
-    }
+    // for (let k in blankRow){
+    //   row.set(k, blankRow[k])
+    // }
 
-    yArray.push([newRow])
-    // console.log(ydoc.getArray('table1').toJSON())
+    table1['push']([blankRow])
   }
 
   return (
     <div className="App" style={{width:250}}>
       <Styles>
-        <DataTable columns={columns} data={mData} updateMyData={updateMyData}/>
+        <DataTable columns={columns} data={table1['data']} updateMyData={updateMyData}/>
       </Styles>
       <input type="button" value="+" onClick={addRow}/>
       <ImportCSV doc={ydoc}/>
