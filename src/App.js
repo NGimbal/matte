@@ -70,7 +70,7 @@ const connectDoc = (doc) => {
   const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room2', doc)
   
   wsProvider.on('status', event => {
-    window.alert(event.status)
+    // window.alert(event.status)
     console.log(event.status) // logs "connected" or "disconnected"
   })
   
@@ -78,6 +78,10 @@ const connectDoc = (doc) => {
 }
 
 function App() {
+
+  const ydoc = useYDoc('docguid', connectDoc)
+  const {data: table, push: yPush, insert: yInsert} = useYArray(ydoc.getArray('table1'))
+
   const columns = React.useMemo(() => [
     {
       Header: 'Format',
@@ -130,43 +134,24 @@ function App() {
     },
   ],[]
   )
-    
-  const ydoc = useYDoc('docguid', connectDoc)
-  // const { data, push, get, insert, delete , } = useYArray(ydoc.getArray('table1'))
-  const table1 = useYArray(ydoc.getArray('table1'))
-
-  const updateMyData = (rowIndex, columnId, value) => {
-    let row = {...table1['get'](rowIndex)}
-    row[columnId] = value
-    
-    // table1['delete'](rowIndex)
-    // table1['insert'](rowIndex, [row])
-    table1['map']((val, index) => {
-      if(index !== rowIndex) return val
-      let row = {...val}
-      val[columnId] = value
-      return row
-    })
-    console.log('updateMyData')
-  }
-
+  
   const addRow = () => {
-    // const row = new Y.Map()
+    const row = new Y.Map()
 
-    // for (let k in blankRow){
-    //   row.set(k, blankRow[k])
-    // }
+    for (let k in blankRow){
+      row.set(k, blankRow[k])
+    }
 
-    table1['push']([blankRow])
+    yPush([row])
   }
 
   return (
     <div className="App" style={{width:250}}>
       <Styles>
-        <DataTable columns={columns} data={table1['data']} updateMyData={updateMyData}/>
+        <DataTable columns={columns} table={table}/>
       </Styles>
       <input type="button" value="+" onClick={addRow}/>
-      <ImportCSV doc={ydoc}/>
+      <ImportCSV doc={ydoc} yPush={yPush} yInsert={yInsert}/>
     </div>
   );
 }
