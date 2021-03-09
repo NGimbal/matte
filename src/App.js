@@ -37,15 +37,6 @@ const Styles = styled.div`
   }
 `
 
-// const ydoc = new Y.Doc()
-
-// const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-roomname', ydoc)
-
-// wsProvider.on('status', event => {
-//   window.alert(event.status)
-//   console.log(event.status) // logs "connected" or "disconnected"
-// })
-
 const blankRow = {
   format: 'lala',
   divNum: '1235',
@@ -67,7 +58,7 @@ const blankRow = {
 
 const connectDoc = (doc) => {
   console.log('connect to a provider with room', doc.guid)
-  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room2', doc)
+  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room3', doc)
   
   wsProvider.on('status', event => {
     // window.alert(event.status)
@@ -80,7 +71,7 @@ const connectDoc = (doc) => {
 function App() {
 
   const ydoc = useYDoc('docguid', connectDoc)
-  const {data: table, push: yPush, insert: yInsert} = useYArray(ydoc.getArray('table1'))
+  const {data, push: yPush, insert: yInsert} = useYArray(ydoc.getArray('table1'))
 
   const columns = React.useMemo(() => [
     {
@@ -148,7 +139,7 @@ function App() {
   return (
     <div className="App" style={{width:250}}>
       <Styles>
-        <DataTable columns={columns} table={table}/>
+        <DataTable columns={columns} data={data}/>
       </Styles>
       <input type="button" value="+" onClick={addRow}/>
       <ImportCSV doc={ydoc} yPush={yPush} yInsert={yInsert}/>

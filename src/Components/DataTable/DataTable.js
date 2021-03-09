@@ -1,82 +1,37 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useTable, useGroupBy, useExpanded, useRowState } from 'react-table'
 import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
-
-// TODO:
-// Cell is rendered normally, except when click, turns to editable cell
-//
-
-// Create an editable cell renderer
-// const EditableCell = ({
-//   // value: initialValue,
-//   row: { original },
-//   // row: { index },
-//   column: { id },
-// }) => {
-  
-//   // Keep and update the state of the cell
-//   const { set, data } = useYMap(original)
-
-//   const onChange = e => {
-//     console.log("onChange")
-//     // setValue(e.target.value)
-//     set(id, `${e.target.value}`)
-//   }
-
-//   // We'll only update the external data when the input is blurred
-//   // const onBlur = () => {
-//   //   console.log("blur")
-//   // }
-
-//   return <input value={data[id]} onChange={onChange} />
-// }
 
 const SimpleEditableCell = ({
   value: initialValue,
   set: set,
   column: { id },
 }) => {
+
+  const [val, setVal] = React.useState(initialValue)
   
-  // Keep and update the state of the cell
-  // const { set, data } = useYMap(original)
+  useEffect(() => {
+    setVal(initialValue)
+  },[initialValue])
 
   const onChange = e => {
-    console.log("onChange")
-    // setValue(e.target.value)
+    setVal(`${e.target.value}`)
+  }
+
+  const onBlur = e => {
     set(id, `${e.target.value}`)
   }
 
-  // We'll only update the external data when the input is blurred
-  // const onBlur = () => {
-  //   console.log("blur")
-  // }
-
-  return <input value={initialValue} onChange={onChange} />
+  return <input value={val} onChange={onChange} onBlur={onBlur} />
 }
 
 const EditableRow = ({
-  // value: initialValue,
-  // row: { original },
   row: row,
-  // row: { index },
-  // column: { id },
 }) => {
   
   // Keep and update the state of the cell
   const { set, data } = useYMap(row.original)
-
-  // const onChange = e => {
-  //   console.log("onChange")
-  //   console.log(e)
-    // setValue(e.target.value)
-    // set(id, `${e.target.value}`)
-  // }
-
-  // We'll only update the external data when the input is blurred
-  // const onBlur = () => {
-  //   console.log("blur")
-  // }
 
   return (
     <tr {...row.getRowProps()}>
@@ -116,32 +71,12 @@ const EditableRow = ({
 }
 
 const GroupedRow = ({
-  // value: initialValue,
-  // row: { original },
   row: row,
-  // row: { index },
-  // column: { id },
 }) => {
-  
-  // Keep and update the state of the cell
-  // const { set, data } = useYMap(row.original)
-
-  // const onChange = e => {
-  //   console.log("onChange")
-  //   console.log(e)
-    // setValue(e.target.value)
-    // set(id, `${e.target.value}`)
-  // }
-
-  // We'll only update the external data when the input is blurred
-  // const onBlur = () => {
-  //   console.log("blur")
-  // }
 
   return (
     <tr {...row.getRowProps()}>
       {row.cells.map(cell => {
-        // console.log(cell)
         return (
           <td 
             {...cell.getCellProps()}
@@ -164,7 +99,7 @@ const GroupedRow = ({
                 </>
                 ) : cell.isAggregated ? (
                   cell.render('Aggregated')
-                ) : cell.isPlaceholder? null : (
+                ) : cell.isPlaceholder ? null : (
                   cell.render('Cell') // this shouldn't happen?
                 )
               }
@@ -175,11 +110,7 @@ const GroupedRow = ({
   )
 }
 
-function DataTable({ columns, table: data }) {
-  // const data = React.useMemo(() =>
-  //   table.map(row => row.toJSON())
-  // , [table])
-
+function DataTable({ columns, data }) {
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -195,13 +126,8 @@ function DataTable({ columns, table: data }) {
     },
     useGroupBy,
     useExpanded,
-    // useRowState,
   )
 
-
-  // console.log(data)
-
-  // Render the UI for your table
   return (
     <table {...getTableProps()}>
       <thead>
@@ -222,14 +148,14 @@ function DataTable({ columns, table: data }) {
       </thead>
       <tbody {...getTableBodyProps()}>
         {rows.map((row, i) => {
-          // is this going to be rly slow?
+
+          // is there a better place to do this?
           if(!row.canExpand){
             row.values = row.original.toJSON()
           }
-          // console.log(prepareRow)
+
           prepareRow(row)
 
-          // row.canExpand ? renderGrouped(row) : renderEditable(row)
           return (            
             <>
             {row.canExpand ? <GroupedRow row={row}/> : <EditableRow row={row}/>}
