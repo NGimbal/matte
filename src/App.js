@@ -56,13 +56,25 @@ const blankRow = {
   remarks: ''
 }
 
+var wsProvider, awareness
+
 const connectDoc = (doc) => {
   console.log('connect to a provider with room', doc.guid)
-  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room3', doc)
+  wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room3', doc)
   
   wsProvider.on('status', event => {
     // window.alert(event.status)
     console.log(event.status) // logs "connected" or "disconnected"
+  })
+
+  awareness = wsProvider.awareness
+
+  // awareness.on('change', changes => {
+  //   console.log(Array.from(awareness.getStates().values()))
+  // })
+
+  awareness.on('update', changes => {
+    console.log(Array.from(awareness.getStates().values()))
   })
   
   return () => console.log('disconnect', doc.guid)
@@ -125,6 +137,14 @@ function App() {
     },
   ],[]
   )
+
+  if(typeof awareness !== 'undefined'){
+    awareness.setLocalState({
+      clientID: awareness.clientID,
+      color: '#feifga',
+      name: 'name name'
+    })
+  }
   
   const addRow = () => {
     const row = new Y.Map()

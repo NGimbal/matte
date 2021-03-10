@@ -84,12 +84,7 @@ function ImportCSV(props) {
       val.map((v,i) => row.set(schema[i], v))
       return row
     })
-    // console.log(data)
-    data = data.slice(0,10)
-    console.log(data)
-    // let array = props.doc.get('data', Y.Array)
-    // array.delete(0, 1)
-    // array.insert(0, data)
+
     props.yInsert(0, data)
 
   },[fileContents.result])
