@@ -78,7 +78,7 @@ const EditableRow = ({
                 ? '#ffa50078' // orange
                 : cell.isPlaceholder
                 ? '#ff000042'
-                : 'white'
+                : 'default'
               }}
             >
               {cell.isGrouped ? (

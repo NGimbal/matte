@@ -15,27 +15,43 @@ import DataTable from './Components/DataTable/DataTable'
 import ImportCSV from './Components/ImportCSV/ImportCSV';
 
 const Styles = styled.div`
-  padding: 1rem;
+  margin:10px;
+  
   table {
     border-spacing: 0;
-    border: 1px solid black;
-
+    border: 1px solid grey;
+    border-radius: 10px;
+    background: rgb(224,224,230);
+    background: linear-gradient(0deg, rgba(224,224,230,1) 0%, rgba(246,246,251,1) 100%);
     tr {
       :last-child {
         td {
           border-bottom: 0;
+          border-radius: 0px 0px 0px 10px;
+          :last-child {
+            border-radius: 0px 0px 10px 0px;
+          }
         }
       }
     }
     th,
     td {
       margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-
+      padding: 0.35rem;
+      border-bottom: 1px solid grey;
+      border-right: 1px solid grey;
       :last-child {
         border-right: 0;
+      }
+      input {
+        border:none;
+        border-bottom: 1px dotted grey;
+        background:none;
+        cursor:pointer;
+        :focus{
+          outline:none;
+          background:rgba(242,242,242,0.75)
+        }
       }
     }
   }
