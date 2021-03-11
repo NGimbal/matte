@@ -6,37 +6,68 @@ import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
 const SimpleEditableCell = ({
   value: initialValue,
   set: set,
-  column: { id },
+  column,
+  row,
+  awareProvider,
+  collabs,
 }) => {
 
   const [val, setVal] = React.useState(initialValue)
+  const [editor, setEditor] = React.useState(null)
   
   useEffect(() => {
     setVal(initialValue)
   },[initialValue])
 
+  useEffect(() => {
+    let editors = [null]
+    if(typeof collabs !== 'undefined') {
+      editors = collabs.filter(val => (val.cursor && val.cursor.row === row && val.cursor.column === column))
+    }
+    setEditor(editors[0])
+  },[collabs])
+
+  // useEffect(() => {
+  //   console.log(editor)
+  // },[editor])
+
   const onChange = e => {
     setVal(`${e.target.value}`)
+    if(typeof awareProvider !== 'undefined'){
+      awareProvider.setLocalStateField('cursor', {
+        column: column,
+        row: row
+      })
+    }
   }
 
   const onBlur = e => {
-    set(id, `${e.target.value}`)
+    set(column, `${e.target.value}`)
   }
 
-  return <input value={val} onChange={onChange} onBlur={onBlur} />
+  return (
+    <>
+    { editor ? 
+      <input style={{border:'3px solid' + editor.color, boxSizing:'border-box'}} value={val} onChange={onChange} onBlur={onBlur}/> :
+      <input value={val} onChange={onChange} onBlur={onBlur}/>
+    }
+    
+    </>
+  )
 }
 
 const EditableRow = ({
   row: row,
+  awareProvider,
+  collabs,
 }) => {
   
   // Keep and update the state of the cell
   const { set, data } = useYMap(row.original)
-
+  
   return (
     <tr {...row.getRowProps()}>
       {row.cells.map(cell => {
-        // console.log(cell)
         return (
           <td 
             {...cell.getCellProps()}
@@ -60,7 +91,7 @@ const EditableRow = ({
                 ) : cell.isAggregated ? (
                   cell.render('Aggregated')
                 ) : cell.isPlaceholder? null : (
-                  cell.render(SimpleEditableCell, {value:cell.value, column: cell.column, set: set})
+                  cell.render(SimpleEditableCell, {value:cell.value, column: cell.column.id, row:cell.row.id, set: set, awareProvider, collabs})
                 )
               }
           </td>
@@ -110,7 +141,7 @@ const GroupedRow = ({
   )
 }
 
-function DataTable({ columns, data }) {
+function DataTable({ columns, data, awareProvider, collabs }) {
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -158,7 +189,7 @@ function DataTable({ columns, data }) {
 
           return (            
             <>
-            {row.canExpand ? <GroupedRow row={row}/> : <EditableRow row={row}/>}
+            {row.canExpand ? <GroupedRow row={row}/> : <EditableRow row={row} awareProvider={awareProvider} collabs={collabs}/>}
             </>
           )
         })}

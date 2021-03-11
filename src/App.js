@@ -88,11 +88,6 @@ const connectDoc = (doc) => {
       clientID: awareProvider.clientID
     })
 
-  // awareProvider.on('update', changes => {
-  //   console.log(Array.from(awareProvider.getStates().values()))
-  //   awareness = Array.from(awareProvider.getStates().values())
-  // })
-
   return () => console.log('disconnect', doc.guid)
 }
 
@@ -102,6 +97,8 @@ const useAwareness = (initAwareness) => {
 
   useEffect(() => {
     if(typeof awareness !== 'undefined'){
+      setCollabs(Array.from(awareness.getStates().values()))
+
       awareness.on('update', () => {
         setCollabs(Array.from(awareProvider.getStates().values()))
       })
@@ -190,7 +187,7 @@ function App() {
     <div className="App">
       <Collaborators collabs={collabs}/>
       <Styles>
-        <DataTable columns={columns} data={data}/>
+        <DataTable columns={columns} data={data} awareProvider={awareProvider} collabs={collabs}/>
       </Styles>
       <input type="button" value="+" onClick={addRow}/>
       <ImportCSV doc={ydoc} yPush={yPush} yInsert={yInsert}/>
