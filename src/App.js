@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
+import {useStore} from 'zustand'
 import './App.css';
 
 import styled from 'styled-components'
 
 import * as Y from 'yjs'
 import { WebsocketProvider } from 'y-websocket'
+
+import * as chroma from 'chroma-js'
 
 import DataTable from './Components/DataTable/DataTable'
 import ImportCSV from './Components/ImportCSV/ImportCSV';
@@ -56,35 +59,65 @@ const blankRow = {
   remarks: ''
 }
 
-var wsProvider, awareness
+function randomName(){
+  let names1 = ['Bold','Confident','Cunning','Sincere','Thoughtful','Honest','Happy','Amorous','Romantic','Pretty','Persistent','Passionate','Loving','Faithful','Nice','Optimistic','Plucky','Thoughtful','Funny','Frank','Fearless','Considerate','Courageous','Marvelous','Capable','Accomplished','Wise','Adept','Expert','Engaging']
+  let names2 = ['Aardvark','Antelope','Fox','Dog','Alligator','Anteater','Ocelot','Tiger','Bear','Whale','Dolphin','Snake','Dragon','Salmon','Tuna','Cuttlefish','Squid','Octopus','Cat','Lion','Cricket','Grasshopper','Rhino','Zebra','Quetzal','Toucan']
+
+  let firstName = names1[Math.floor(Math.random() * names1.length)]
+  let lastName = names2[Math.floor(Math.random() * names2.length)]
+
+  return firstName + ' ' + lastName
+}
+
+var awareProvider
 
 const connectDoc = (doc) => {
   console.log('connect to a provider with room', doc.guid)
-  wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room3', doc)
+  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room3', doc)
   
   wsProvider.on('status', event => {
-    // window.alert(event.status)
-    console.log(event.status) // logs "connected" or "disconnected"
+    console.log(event.status)
   })
 
-  awareness = wsProvider.awareness
+  awareProvider = wsProvider.awareness
 
-  // awareness.on('change', changes => {
-  //   console.log(Array.from(awareness.getStates().values()))
+  awareProvider.setLocalState({ 
+      color: chroma.random(),
+      name: randomName(),
+      clientID: awareProvider.clientID
+    })
+
+  // awareProvider.on('update', changes => {
+  //   console.log(Array.from(awareProvider.getStates().values()))
+  //   awareness = Array.from(awareProvider.getStates().values())
   // })
 
-  awareness.on('update', changes => {
-    console.log(Array.from(awareness.getStates().values()))
-  })
-  
   return () => console.log('disconnect', doc.guid)
 }
+
+const useAwareness = (initAwareness) => {
+  const [collabs, setCollabs] = useState([])
+  const [awareness, setAwareness] = useState(initAwareness)
+
+  useEffect(() => {
+    if(typeof awareness !== 'undefined'){
+      awareness.on('update', () => {
+        setCollabs(Array.from(awareProvider.getStates().values()))
+      })
+    }
+  },[awareness])
+  
+  return [collabs, setAwareness]
+}
+
 
 function App() {
 
   const ydoc = useYDoc('docguid', connectDoc)
   const {data, push: yPush, insert: yInsert} = useYArray(ydoc.getArray('table1'))
-
+  
+  const [collabs, setAwareness] = useAwareness(awareProvider)
+  
   const columns = React.useMemo(() => [
     {
       Header: 'Format',
@@ -138,14 +171,10 @@ function App() {
   ],[]
   )
 
-  if(typeof awareness !== 'undefined'){
-    awareness.setLocalState({
-      clientID: awareness.clientID,
-      color: '#feifga',
-      name: 'name name'
-    })
-  }
-  
+  useEffect(() => {
+    console.log(collabs)
+  },[collabs])
+
   const addRow = () => {
     const row = new Y.Map()
 
@@ -157,7 +186,7 @@ function App() {
   }
 
   return (
-    <div className="App" style={{width:250}}>
+    <div className="App">
       <Styles>
         <DataTable columns={columns} data={data}/>
       </Styles>
