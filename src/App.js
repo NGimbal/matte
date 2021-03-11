@@ -10,6 +10,7 @@ import { WebsocketProvider } from 'y-websocket'
 
 import * as chroma from 'chroma-js'
 
+import Collaborators from './Components/Collaborators/Collaborators'
 import DataTable from './Components/DataTable/DataTable'
 import ImportCSV from './Components/ImportCSV/ImportCSV';
 
@@ -82,7 +83,7 @@ const connectDoc = (doc) => {
   awareProvider = wsProvider.awareness
 
   awareProvider.setLocalState({ 
-      color: chroma.random(),
+      color: chroma.random().hex(),
       name: randomName(),
       clientID: awareProvider.clientID
     })
@@ -187,6 +188,7 @@ function App() {
 
   return (
     <div className="App">
+      <Collaborators collabs={collabs}/>
       <Styles>
         <DataTable columns={columns} data={data}/>
       </Styles>
