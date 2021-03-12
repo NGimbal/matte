@@ -47,11 +47,11 @@ const SimpleEditableCell = ({
 
   return (
     <>
-    { editor ? 
-      <input style={{border:'3px solid' + editor.color, boxSizing:'border-box'}} value={val} onChange={onChange} onBlur={onBlur}/> :
-      <input value={val} onChange={onChange} onBlur={onBlur}/>
-    }
-    
+      { 
+        editor ? 
+        <input style={{border:'3px solid' + editor.color, boxSizing:'border-box'}} value={val} onChange={onChange} onBlur={onBlur}/> :
+        <input value={val} onChange={onChange} onBlur={onBlur}/>
+      }
     </>
   )
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
-import {useStore} from 'zustand'
 import './App.css';
 
 import styled from 'styled-components'
@@ -10,9 +9,12 @@ import { WebsocketProvider } from 'y-websocket'
 
 import * as chroma from 'chroma-js'
 
-import Collaborators from './Components/Collaborators/Collaborators'
+// import Collaborators from './Components/Collaborators/Collaborators'
 import DataTable from './Components/DataTable/DataTable'
 import ImportCSV from './Components/ImportCSV/ImportCSV';
+import Drawer from './Components/Drawer/Drawer';
+import TableControls from './Components/TableControls/TableControls';
+import AppBar from './Components/AppBar/AppBar';
 
 const Styles = styled.div`
   margin:10px;
@@ -20,16 +22,16 @@ const Styles = styled.div`
   table {
     border-spacing: 0;
     border: 1px solid grey;
-    border-radius: 10px;
+    border-radius: 5px;
     background: rgb(224,224,230);
     background: linear-gradient(0deg, rgba(224,224,230,1) 0%, rgba(246,246,251,1) 100%);
     tr {
       :last-child {
         td {
           border-bottom: 0;
-          border-radius: 0px 0px 0px 10px;
+          border-radius: 0px 0px 0px 5px;
           :last-child {
-            border-radius: 0px 0px 10px 0px;
+            border-radius: 0px 0px 5px 0px;
           }
         }
       }
@@ -37,7 +39,7 @@ const Styles = styled.div`
     th,
     td {
       margin: 0;
-      padding: 0.35rem;
+      padding: 0.5rem;
       border-bottom: 1px solid grey;
       border-right: 1px solid grey;
       :last-child {
@@ -77,7 +79,7 @@ const blankRow = {
 }
 
 function randomName(){
-  let names1 = ['Bold','Confident','Cunning','Sincere','Thoughtful','Honest','Happy','Amorous','Romantic','Pretty','Persistent','Passionate','Loving','Faithful','Nice','Optimistic','Plucky','Thoughtful','Funny','Frank','Fearless','Considerate','Courageous','Marvelous','Capable','Accomplished','Wise','Adept','Expert','Engaging']
+  let names1 = ['Bold','Confident','Cunning','Sincere','Thoughtful','Honest','Happy','Amorous','Enlightened','Pretty','Persistent','Passionate','Loving','Faithful','Nice','Optimistic','Plucky','Thoughtful','Funny','Frank','Fearless','Considerate','Courageous','Marvelous','Capable','Accomplished','Wise','Adept','Expert','Engaging']
   let names2 = ['Aardvark','Antelope','Fox','Dog','Alligator','Anteater','Ocelot','Tiger','Bear','Whale','Dolphin','Snake','Dragon','Salmon','Tuna','Cuttlefish','Squid','Octopus','Cat','Lion','Cricket','Grasshopper','Rhino','Zebra','Quetzal','Toucan']
 
   let firstName = names1[Math.floor(Math.random() * names1.length)]
@@ -90,7 +92,7 @@ var awareProvider
 
 const connectDoc = (doc) => {
   console.log('connect to a provider with room', doc.guid)
-  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room3', doc)
+  const wsProvider = new WebsocketProvider('ws://matte-server.herokuapp.com/', 'my-room3', doc)
   
   wsProvider.on('status', event => {
     console.log(event.status)
@@ -185,9 +187,9 @@ function App() {
   ],[]
   )
 
-  useEffect(() => {
-    console.log(collabs)
-  },[collabs])
+  // useEffect(() => {
+  //   console.log(collabs)
+  // },[collabs])
 
   const addRow = () => {
     const row = new Y.Map()
@@ -201,12 +203,22 @@ function App() {
 
   return (
     <div className="App">
-      <Collaborators collabs={collabs}/>
-      <Styles>
-        <DataTable columns={columns} data={data} awareProvider={awareProvider} collabs={collabs}/>
-      </Styles>
-      <input type="button" value="+" onClick={addRow}/>
-      <ImportCSV doc={ydoc} yPush={yPush} yInsert={yInsert}/>
+      <AppBar collabs={collabs}/>
+      <div style={{display:'flex', flexDirection:'row', height:'100%'}}>
+        <Drawer/>
+        <div style={{display:'flex', flexDirection:'column', width:'85%'}}>
+          <TableControls/>
+          <div style={{display:'flex', flexDirection:'column'}}>
+            <Styles>
+              <DataTable columns={columns} data={data} awareProvider={awareProvider} collabs={collabs}/>
+            </Styles>
+            <div style={{width:'100%', display:'flex'}}>
+              <input type="button" value="+" onClick={addRow}/>
+              <ImportCSV doc={ydoc} yPush={yPush} yInsert={yInsert}/>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

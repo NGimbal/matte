@@ -4,7 +4,7 @@ import React, { useEffect, useMemo } from 'react';
 function Collaborators({collabs}) {
   
   return (
-    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'1%'}}>
+    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%'}}>
       { 
         collabs.length ?
         <span style={{fontWeight:'bold', color:collabs[0].color}}>
