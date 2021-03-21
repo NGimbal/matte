@@ -1,9 +1,13 @@
+// Editable Row, and Cell Components
+
+// Table container, data and useTable
+
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useTable, useGroupBy, useExpanded, useRowState } from 'react-table'
 import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
 
-const SimpleEditableCell = ({
+export const EditCell = ({
   value: initialValue,
   set: set,
   column,
@@ -27,10 +31,6 @@ const SimpleEditableCell = ({
     setEditor(editors[0])
   },[collabs])
 
-  // useEffect(() => {
-  //   console.log(editor)
-  // },[editor])
-
   const onChange = e => {
     setVal(`${e.target.value}`)
     if(typeof awareProvider !== 'undefined'){
@@ -50,13 +50,13 @@ const SimpleEditableCell = ({
       { 
         editor ? 
         <input style={{border:'3px solid' + editor.color, boxSizing:'border-box'}} value={val} onChange={onChange} onBlur={onBlur}/> :
-        <input value={val} onChange={onChange} onBlur={onBlur}/>
+        <input style={{boxSizing:'border-box'}} value={val} onChange={onChange} onBlur={onBlur}/>
       }
     </>
   )
 }
 
-const EditableRow = ({
+export const EditRow = ({
   row: row,
   awareProvider,
   collabs,
@@ -91,7 +91,7 @@ const EditableRow = ({
                 ) : cell.isAggregated ? (
                   cell.render('Aggregated')
                 ) : cell.isPlaceholder? null : (
-                  cell.render(SimpleEditableCell, {value:cell.value, column: cell.column.id, row:cell.row.id, set: set, awareProvider, collabs})
+                  cell.render(EditCell, {value:cell.value, column: cell.column.id, row:cell.row.id, set: set, awareProvider, collabs})
                 )
               }
           </td>
@@ -101,7 +101,7 @@ const EditableRow = ({
   )
 }
 
-const GroupedRow = ({
+export const GroupedRow = ({
   row: row,
 }) => {
 
@@ -141,61 +141,4 @@ const GroupedRow = ({
   )
 }
 
-function DataTable({ columns, data, awareProvider, collabs }) {
-  // Use the state and functions returned from useTable to build your UI
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    state: { groupBy, expanded },
-  } = useTable(
-    {
-      columns,
-      data,
-    },
-    useGroupBy,
-    useExpanded,
-  )
-
-  return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>
-                {column.canGroupBy ? (
-                  <span {...column.getGroupByToggleProps()}>
-                    {column.isGrouped ? '🤌' : '🖐'}
-                  </span>
-                ) : null}
-                {column.render('Header')}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-
-          // is there a better place to do this?
-          if(!row.canExpand){
-            row.values = row.original.toJSON()
-          }
-
-          prepareRow(row)
-
-          return (            
-            <>
-            {row.canExpand ? <GroupedRow row={row}/> : <EditableRow row={row} awareProvider={awareProvider} collabs={collabs}/>}
-            </>
-          )
-        })}
-      </tbody>
-    </table>
-  )
-}
-
-export default DataTable
+// export {EditCell, EditRow, GroupedRow}
