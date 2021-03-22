@@ -18,9 +18,9 @@ import GlobalControls from './GlobalControls'
 const Styles = styled.div`
   margin:10px;  
   table {
-    color: ${props => props.theme.primary};
+    color: ${props => props.theme.text};
     border-spacing: 0;
-    border: 1px solid ${props => props.theme.primary};
+    border: 1px solid ${props => props.theme.text};
     border-radius: 2px;
     /*background: rgb(224,224,230);*/
     /*background: linear-gradient(0deg, rgba(224,224,230,1) 0%, rgba(246,246,251,1) 100%);*/

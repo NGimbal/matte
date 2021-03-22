@@ -10,13 +10,13 @@ import {ThemeProvider} from 'styled-components'
 
 const theme = {
     text: '#001720',
-    contrastText: '#C2C8CA',
+    contrastText: '#F8F9F9',
 
-    primary: '#0F1C38',
-    primaryLite: '#7886A3',
+    primary: '#f44336',
+    primaryLite: '#f6685e',
 
-    secondary: '#461F4E',
-    secondaryLite: '#E6E1E7',
+    secondary: '#2979FF',
+    secondaryLite: '#5393ff',
 
     ok: '#00A584',
     warning: '#FEDF00',
