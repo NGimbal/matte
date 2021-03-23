@@ -139,7 +139,7 @@ function DataTable({width}) {
   const {data, push: yPush, insert: yInsert} = useYArray(yDoc.getArray('table1'))
   
   const [collabs, setAwareness] = useAwareness(awareProvider)
-  
+
   const columns = React.useMemo(() => [
     {
       Header: 'A',
@@ -162,6 +162,40 @@ function DataTable({width}) {
     }
   ],[]
   )
+
+  // Columns as a yArray of yMaps so we can change schema collaboratively
+  // const columnsInit = [
+  //   {
+  //     Header: 'A',
+  //     accessor: 'a', // accessor is the "key" in the data
+  //   },{
+  //     Header: 'B',
+  //     accessor: 'b',
+  //   },{
+  //     Header: 'C',
+  //     accessor: 'c',
+  //   },{
+  //     Header: 'D',
+  //     accessor: 'd',
+  //   },{
+  //     Header: 'E',
+  //     accessor: 'e',
+  //   },{
+  //     Header: 'F',
+  //     accessor: 'f',
+  //   }
+  // ]
+
+  // const {data: columns, get: colGet, slice: colSlice } = useYArray(yDoc.getArray('table_columns'))
+  
+  // useEffect(() => {
+  //   columnsInit.map((val, i) => {
+  //     let col = colGet(i)
+  //     console.log(col)
+  //     if(!col) 
+  //   })
+  // }, [])
+
 
   // Use the state and functions returned from useTable to build your UI
   const {
