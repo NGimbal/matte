@@ -5,7 +5,7 @@ import Collaborators from '../Collaborators/Collaborators'
 
 import * as Y from 'yjs'
 
-import {Table, Menu, Popover, Position, TextDropdownButton, MoreIcon, EditIcon, GroupObjectsIcon} from 'evergreen-ui'
+import {Table, Menu, Popover, Position, TextDropdownButton, MoreIcon, EditIcon, GroupObjectsIcon, ExpandAllIcon} from 'evergreen-ui'
 
 // Change projects, also views for current project
 function TableHeader({column}) {
@@ -23,7 +23,7 @@ function TableHeader({column}) {
           </Menu>
         }>
           <TextDropdownButton
-            icon={MoreIcon}
+            iconAfter={MoreIcon}
             style={{
               width:'calc(100% - 20px)',
               justifyContent:'space-between',

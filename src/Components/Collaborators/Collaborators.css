@@ -1,3 +1,7 @@
+.anim_avatar:not(:last-child){
+  margin-right:-16px;
+}
+
 .anim_container:hover .anim_avatar:not(:last-child){
   margin-right:8px;
 }

@@ -19,19 +19,41 @@ import GlobalControls from './GlobalControls'
 const Styles = styled.div`
   width: ${props => props.width};
   padding: 24px;
+  
+  max-width:100%;
+  display: block;
+
+  .tableWrap {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
   table {
+    width: 100%;
+    border-spacing: 0;
+
     margin: 4px 0px 4px 0px;
     color: ${props => props.theme.text};
     border-spacing: 0;
     border: 1px solid ${props => props.theme.text};
     border-radius: 2px;
-    /*background: rgb(224,224,230);*/
-    /*background: linear-gradient(0deg, rgba(224,224,230,1) 0%, rgba(246,246,251,1) 100%);*/
+
     tr {
       :last-child {
         td {
+          margin: 0px
+
           border-bottom: 0;
           border-radius: 0px 0px 0px 2px;
+
+          width: 1%;
+          /* But "collapsed" cells should be as small as possible */
+          &.collapse {
+            width: 0.0000000001%;
+          }
+
           :last-child {
             border-radius: 0px 0px 2px 0px;
           }
@@ -161,42 +183,37 @@ function DataTable({width}) {
   return (
     <Styles width={width}>
       <GlobalControls collabs={collabs}/>
-      <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                  <TableHeader column={column}/>
-            //       {column.canGroupBy ? (
-            //         <span {...column.getGroupByToggleProps()}>
-            //           {column.isGrouped ? '🤌' : '🖐'}
-            //         </span>
-            //       ) : null}
-            //       {column.render('Header')}
-            //     </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+      <div className="tableWrap">
+        <table {...getTableProps()}>
+          <thead>
+            {headerGroups.map(headerGroup => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => (
+                    <TableHeader column={column}/>
+                ))}
+              </tr>
+            ))}
+          </thead>
 
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          <tbody {...getTableBodyProps()}>
+            {rows.map((row, i) => {
 
-            // is there a better place to do this?
-            if(!row.canExpand){
-              row.values = row.original.toJSON()
-            }
+              // is there a better place to do this?
+              if(!row.canExpand){
+                row.values = row.original.toJSON()
+              }
 
-            prepareRow(row)
+              prepareRow(row)
 
-            return (            
-              <>
-              {row.canExpand ? <GroupedRow row={row}/> : <EditRow row={row} awareProvider={awareProvider} collabs={collabs}/>}
-              </>
-            )
-          })}
-        </tbody>
-      </table>
+              return (            
+                <>
+                {row.canExpand ? <GroupedRow row={row}/> : <EditRow row={row} awareProvider={awareProvider} collabs={collabs}/>}
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
       <Toolbar yDoc={yDoc} yPush={yPush} yInsert={yInsert}/>
     </Styles>
   )

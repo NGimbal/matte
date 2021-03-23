@@ -32,7 +32,7 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
       <AppBar/>
-      <div style={{display:'flex', flexDirection:'row', height:'100%'}}>
+      <div style={{display:'flex', flexDirection:'row', height:'calc(100% - 48px)'}}>
         <Drawer width='15%'/>
         <DataTable width='85%'/>
       </div>
