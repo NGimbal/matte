@@ -99,8 +99,8 @@ var awareProvider
 const connectDoc = (doc) => {
   // console.log('connect to a provider with room', doc.guid)
 
-  // const wsProvider = new WebsocketProvider('wss://matte-server.herokuapp.com/', 'my-room3', doc)
-  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room5', doc)
+  const wsProvider = new WebsocketProvider('wss://matte-server.herokuapp.com/', 'my-room4', doc)
+  // const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room5', doc)
   
   wsProvider.on('status', event => {
     console.log(event.status)
