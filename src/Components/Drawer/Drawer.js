@@ -12,6 +12,8 @@ function Drawer({orgs, projects, width}) {
       border="default"
       flexDirection="column"
       alignItems="flex-start"
+      border="none"
+      boxShadow="1px 0px 2px 1px rgba(0,0,0,0.125)"
     >
       <Heading size={600} marginTop={24} marginLeft={8} marginBottom={16}>Projects</Heading>
       <div style={{marginLeft:'8px', borderBottom:'1px solid #E4E7EB',width:'85%',height:'1px',boxSizing:'border-box'}}/>

@@ -18,7 +18,7 @@ function TableHeader({column}) {
           <Menu>
             <Menu.Group>
               <Menu.Item icon={EditIcon}>Rename</Menu.Item>
-              <Menu.Item icon={GroupObjectsIcon}>Group by</Menu.Item>
+              <Menu.Item icon={GroupObjectsIcon} {...column.getGroupByToggleProps()}>Group by</Menu.Item>
             </Menu.Group>
           </Menu>
         }>

@@ -9,10 +9,10 @@ import Collaborators from '../Collaborators/Collaborators';
 function GlobalControls({collabs}) {
 
   return (
-    <div style={{display:'flex', margin:'20px 20px 0px 20px', alignItems:'center', justifyContent:'space-between'}}>
+    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
         <div style={{display:'flex'}}>
-          <IconButton icon={GroupObjectsIcon} marginRight={10}/>
-          <IconButton icon={FilterListIcon} marginRight={10}/>
+          <IconButton icon={GroupObjectsIcon} marginRight={8}/>
+          <IconButton icon={FilterListIcon} marginRight={8}/>
           <IconButton icon={CogIcon}/>
         </div>
         <Collaborators collabs={collabs}/>

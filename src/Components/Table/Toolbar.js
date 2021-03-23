@@ -5,7 +5,7 @@ import Collaborators from '../Collaborators/Collaborators'
 
 import * as Y from 'yjs'
 
-import {Button, ImportIcon, Pane, PlusIcon, Popover, Position} from 'evergreen-ui'
+import {Button, ExportIcon, ImportIcon, Pane, PlusIcon, Popover, Position} from 'evergreen-ui'
 
 import ImportCSV from '../ImportCSV/ImportCSV'
 
@@ -33,7 +33,7 @@ function Toolbar({yDoc, yPush, yInsert}) {
 
   return (
     <div style={{width:'100%', display:'flex', alignItems:'flex-start'}}>
-      <Button iconBefore={PlusIcon} onClick={addRow} marginLeft={20} marginRight={10}>Add Row</Button>
+      <Button iconBefore={PlusIcon} onClick={addRow} marginRight={8}>Add Row</Button>
       <Popover
         bringFocusInside
         position={Position.BOTTOM}
@@ -48,8 +48,9 @@ function Toolbar({yDoc, yPush, yInsert}) {
             <ImportCSV doc={yDoc} yPush={yPush} yInsert={yInsert}/>
           </Pane> 
         }>
-          <Button iconBefore={ImportIcon}>Import CSV</Button>
+          <Button iconBefore={ImportIcon} marginRight={8}>Import CSV</Button>
         </Popover>
+        <Button iconBefore={ExportIcon}>Export CSV</Button>
     </div>
   );
 }

@@ -31,6 +31,7 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
+      <AppBar/>
       <div style={{display:'flex', flexDirection:'row', height:'100%'}}>
         <Drawer width='15%'/>
         <DataTable width='85%'/>

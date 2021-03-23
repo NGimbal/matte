@@ -6,6 +6,7 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useTable, useGroupBy, useExpanded, useRowState } from 'react-table'
 import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
+import { Button, ChevronDownIcon, ChevronRightIcon, CollapseAllIcon, ExpandAllIcon, Heading } from 'evergreen-ui'
 
 export const EditCell = ({
   value: initialValue,
@@ -69,31 +70,18 @@ export const EditRow = ({
     <tr {...row.getRowProps()}>
       {row.cells.map(cell => {
         return (
-          <td 
-            {...cell.getCellProps()}
-            style={{
-              background: cell.isGrouped
-                ? '#0aff0082' // green
-                : cell.isAggregated
-                ? '#ffa50078' // orange
-                : cell.isPlaceholder
-                ? '#ff000042'
-                : 'default'
-              }}
-            >
-              {cell.isGrouped ? (
-                <>
-                  <span {...row.getToggleRowExpandedProps()}>
-                    {row.isExpanded ? '👇' : '👉'}
-                  </span>{' '}
-                  {cell.render('Cell')} ({row.subRows.length})
-                </>
-                ) : cell.isAggregated ? (
-                  cell.render('Aggregated')
-                ) : cell.isPlaceholder? null : (
-                  cell.render(EditCell, {value:cell.value, column: cell.column.id, row:cell.row.id, set: set, awareProvider, collabs})
-                )
-              }
+          <td {...cell.getCellProps()}>
+            {cell.isPlaceholder ? (
+                <></>
+              ) : (
+                cell.render(EditCell, {value:cell.value, 
+                                        column: cell.column.id, 
+                                        row:cell.row.id, 
+                                        set: set, 
+                                        awareProvider, 
+                                        collabs})
+              )
+            }
           </td>
         )
       })}
@@ -107,38 +95,19 @@ export const GroupedRow = ({
 
   return (
     <tr {...row.getRowProps()}>
-      {row.cells.map(cell => {
-        return (
-          <td 
-            {...cell.getCellProps()}
-            style={{
-              background: cell.isGrouped
-                ? '#0aff0082' // green
-                : cell.isAggregated
-                ? '#ffa50078' // orange
-                : cell.isPlaceholder
-                ? '#ff000042'
-                : 'white'
-              }}
-            >
-              {cell.isGrouped ? (
-                <>
-                  <span {...row.getToggleRowExpandedProps()}>
-                    {row.isExpanded ? '👇' : '👉'}
-                  </span>{' '}
-                  {cell.render('Cell')} ({row.subRows.length})
-                </>
-                ) : cell.isAggregated ? (
-                  cell.render('Aggregated')
-                ) : cell.isPlaceholder ? null : (
-                  cell.render('Cell') // this shouldn't happen?
-                )
-              }
-          </td>
-        )
+      {row.cells.map((cell, i) => {
+          if(i > row.depth) return 
+          return (
+            i === row.depth ?
+              <td colSpan={Object.keys(row.values).length - i} style={{display:'flex'}} {...cell.getCellProps()}>
+                <Button height={32} appearance="minimal" iconBefore={row.isExpanded ? <ChevronDownIcon/>  : <ChevronRightIcon/>}  {...row.getToggleRowExpandedProps()}> 
+                  {row.groupByVal}
+                </Button>
+              </td>
+              :
+              cell.render(<td></td>)
+          )
       })}
     </tr>  
   )
 }
-
-// export {EditCell, EditRow, GroupedRow}

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useTable, useGroupBy, useExpanded, useRowState } from 'react-table'
 import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
-import {Table} from 'evergreen-ui'
+import {Heading, Table} from 'evergreen-ui'
 
 import { WebsocketProvider } from 'y-websocket'
 import * as chroma from 'chroma-js'
@@ -18,8 +18,9 @@ import GlobalControls from './GlobalControls'
 
 const Styles = styled.div`
   width: ${props => props.width};
+  padding: 24px;
   table {
-    margin: 5px 20px 5px 20px;
+    margin: 4px 0px 4px 0px;
     color: ${props => props.theme.text};
     border-spacing: 0;
     border: 1px solid ${props => props.theme.text};
@@ -165,7 +166,6 @@ function DataTable({width}) {
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                // <th {...column.getHeaderProps()}>
                   <TableHeader column={column}/>
             //       {column.canGroupBy ? (
             //         <span {...column.getGroupByToggleProps()}>
