@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useTable, useGroupBy, useExpanded, useRowState } from 'react-table'
+import * as Y from 'yjs'
 import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
 import {Heading, Table} from 'evergreen-ui'
 
@@ -99,8 +100,8 @@ var awareProvider
 const connectDoc = (doc) => {
   // console.log('connect to a provider with room', doc.guid)
 
-  const wsProvider = new WebsocketProvider('wss://matte-server.herokuapp.com/', 'my-room4', doc)
-  // const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room5', doc)
+  // const wsProvider = new WebsocketProvider('wss://matte-server.herokuapp.com/', 'my-room4', doc)
+  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room5', doc)
   
   wsProvider.on('status', event => {
     console.log(event.status)
@@ -134,37 +135,39 @@ const useAwareness = (initAwareness) => {
   return [collabs, setAwareness]
 }
 
+// Columns as a yArray of yMaps so we can change schema collaboratively
+const columnsInit = [
+  {
+    Header: 'A',
+    accessor: 'a', // accessor is the "key" in the data
+  },{
+    Header: 'B',
+    accessor: 'b',
+  },{
+    Header: 'C',
+    accessor: 'c',
+  },{
+    Header: 'D',
+    accessor: 'd',
+  },{
+    Header: 'E',
+    accessor: 'e',
+  },{
+    Header: 'F',
+    accessor: 'f',
+  }
+]
+
 function DataTable({width}) {
   const yDoc = useYDoc('docguid', connectDoc)
+  
   const {data, push: yPush, insert: yInsert} = useYArray(yDoc.getArray('table1'))
   
+  const {data: yColumns, set: cSet } = useYMap(yDoc.getMap('table1-columns'))
+
   const [collabs, setAwareness] = useAwareness(awareProvider)
 
-  const columns = React.useMemo(() => [
-    {
-      Header: 'A',
-      accessor: 'a', // accessor is the "key" in the data
-    },{
-      Header: 'B',
-      accessor: 'b',
-    },{
-      Header: 'C',
-      accessor: 'c',
-    },{
-      Header: 'D',
-      accessor: 'd',
-    },{
-      Header: 'E',
-      accessor: 'e',
-    },{
-      Header: 'F',
-      accessor: 'f',
-    }
-  ],[]
-  )
-
-  // Columns as a yArray of yMaps so we can change schema collaboratively
-  // const columnsInit = [
+  // const columns = React.useMemo(() => [
   //   {
   //     Header: 'A',
   //     accessor: 'a', // accessor is the "key" in the data
@@ -184,18 +187,28 @@ function DataTable({width}) {
   //     Header: 'F',
   //     accessor: 'f',
   //   }
-  // ]
+  // ],[]
+  // )
 
-  // const {data: columns, get: colGet, slice: colSlice } = useYArray(yDoc.getArray('table_columns'))
-  
+  const columns = React.useMemo(() => 
+    Object.keys(yColumns).map(k => {
+      return({Header: yColumns[k], accessor: k })
+    })
+  ,[yColumns])
+
+  useEffect(() => {
+    columnsInit.map(val => {
+      cSet(val['accessor'], val['Header'])
+    })
+  },[])
+
   // useEffect(() => {
-  //   columnsInit.map((val, i) => {
-  //     let col = colGet(i)
-  //     console.log(col)
-  //     if(!col) 
-  //   })
-  // }, [])
+  //   console.log(columns)
+  // }, [columns])
 
+  // useEffect(() => {
+  //   console.log(yColumns)
+  // }, [yColumns])
 
   // Use the state and functions returned from useTable to build your UI
   const {
