@@ -3,9 +3,9 @@ import './App.css'
 
 import create from 'zustand'
 
-import Table from './Components/Table/Table'
+import DataTable from './Components/Table/DataTable'
 import Drawer from './Components/Drawer/Drawer'
-
+import AppBar from './Components/AppBar/AppBar'
 import {ThemeProvider} from 'styled-components'
 
 const theme = {
@@ -24,6 +24,7 @@ const theme = {
 
     grey: '#CED3DF',
   }
+  
 
 function App() {
 
@@ -31,12 +32,8 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
       <div style={{display:'flex', flexDirection:'row', height:'100%'}}>
-        <Drawer/>
-        <div style={{display:'flex', flexDirection:'column', width:'85%'}}>
-          <div style={{display:'flex', flexDirection:'column'}}>
-              <Table/>
-          </div>
-        </div>
+        <Drawer width='15%'/>
+        <DataTable width='85%'/>
       </div>
       </ThemeProvider>
     </div>

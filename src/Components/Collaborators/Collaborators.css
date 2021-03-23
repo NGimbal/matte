@@ -1,0 +1,7 @@
+.anim_container:hover .anim_avatar:not(:last-child){
+  margin-right:8px;
+}
+
+.anim_avatar{
+  transition: margin 500ms ease-in-out;
+}

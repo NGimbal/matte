@@ -1,27 +1,23 @@
 // Add row, import CSV, download CSV buttons
 import React from 'react';
 
-import Collaborators from '../Collaborators/Collaborators'
-
-import {Button} from 'evergreen-ui'
+import {IconButton} from 'evergreen-ui'
 import {CogIcon, GroupObjectsIcon, FilterListIcon} from 'evergreen-ui'
+import Collaborators from '../Collaborators/Collaborators';
 
 // Change projects, also views for current project
 function GlobalControls({collabs}) {
 
   return (
-    <div style={{width:'100%', display:'flex'}}>
-      <div style={{width:'40%', display:'flex'}}>
-        <Button iconBefore={GroupObjectsIcon}> Group </Button>
-        <Button iconBefore={FilterListIcon}> Filter </Button>
-        <Button iconBefore={CogIcon}>Settings</Button>  
-      </div>
-      <Collaborators collabs={collabs}/>
+    <div style={{display:'flex', margin:'20px 20px 0px 20px', alignItems:'center', justifyContent:'space-between'}}>
+        <div style={{display:'flex'}}>
+          <IconButton icon={GroupObjectsIcon} marginRight={10}/>
+          <IconButton icon={FilterListIcon} marginRight={10}/>
+          <IconButton icon={CogIcon}/>
+        </div>
+        <Collaborators collabs={collabs}/>
     </div>
   );
 }
 
 export default GlobalControls;
-
-
-

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useTable, useGroupBy, useExpanded, useRowState } from 'react-table'
 import { useYDoc, useYArray, useYMap } from 'zustand-yjs'
-
+import {Table} from 'evergreen-ui'
 
 import { WebsocketProvider } from 'y-websocket'
 import * as chroma from 'chroma-js'
@@ -12,12 +12,14 @@ import * as chroma from 'chroma-js'
 import Toolbar from './Toolbar'
 import {EditRow, EditCell, GroupedRow} from './Row'
 import {Footer} from './Toolbar'
+import TableHeader from './TableHeader'
 
 import GlobalControls from './GlobalControls'
 
 const Styles = styled.div`
-  margin:10px;  
+  width: ${props => props.width};
   table {
+    margin: 5px 20px 5px 20px;
     color: ${props => props.theme.text};
     border-spacing: 0;
     border: 1px solid ${props => props.theme.text};
@@ -109,7 +111,7 @@ const useAwareness = (initAwareness) => {
   return [collabs, setAwareness]
 }
 
-function Table() {
+function DataTable({width}) {
   const yDoc = useYDoc('docguid', connectDoc)
   const {data, push: yPush, insert: yInsert} = useYArray(yDoc.getArray('table1'))
   
@@ -156,22 +158,22 @@ function Table() {
   )
 
   return (
-    <Styles>
+    <Styles width={width}>
       <GlobalControls collabs={collabs}/>
       <table {...getTableProps()}>
-
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>
-                  {column.canGroupBy ? (
-                    <span {...column.getGroupByToggleProps()}>
-                      {column.isGrouped ? '🤌' : '🖐'}
-                    </span>
-                  ) : null}
-                  {column.render('Header')}
-                </th>
+                // <th {...column.getHeaderProps()}>
+                  <TableHeader column={column}/>
+            //       {column.canGroupBy ? (
+            //         <span {...column.getGroupByToggleProps()}>
+            //           {column.isGrouped ? '🤌' : '🖐'}
+            //         </span>
+            //       ) : null}
+            //       {column.render('Header')}
+            //     </th>
               ))}
             </tr>
           ))}
@@ -200,4 +202,4 @@ function Table() {
   )
 }
 
-export default Table
+export default DataTable

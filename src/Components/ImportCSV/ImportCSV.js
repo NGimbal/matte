@@ -1,3 +1,4 @@
+import { FilePicker } from 'evergreen-ui';
 import React, { useEffect, useMemo } from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
@@ -90,10 +91,11 @@ function ImportCSV(props) {
   },[fileContents.result])
 
   return (
-    <div>
-      <label htmlFor="input-file">Choose a CSV File:</label>
-      <input id="input-file" type="file" onChange={getFile}></input>
-    </div>
+    // <div>
+    //   <label htmlFor="input-file">Choose a CSV File:</label>
+    //   <input id="input-file" type="file" onChange={getFile}></input>
+    // </div>
+    <FilePicker onChange={getFile} placeholder="Choose a CSV File"/>
   );
 }
 
