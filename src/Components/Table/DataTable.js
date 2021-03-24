@@ -167,29 +167,6 @@ function DataTable({width}) {
 
   const [collabs, setAwareness] = useAwareness(awareProvider)
 
-  // const columns = React.useMemo(() => [
-  //   {
-  //     Header: 'A',
-  //     accessor: 'a', // accessor is the "key" in the data
-  //   },{
-  //     Header: 'B',
-  //     accessor: 'b',
-  //   },{
-  //     Header: 'C',
-  //     accessor: 'c',
-  //   },{
-  //     Header: 'D',
-  //     accessor: 'd',
-  //   },{
-  //     Header: 'E',
-  //     accessor: 'e',
-  //   },{
-  //     Header: 'F',
-  //     accessor: 'f',
-  //   }
-  // ],[]
-  // )
-
   const columns = React.useMemo(() => 
     Object.keys(yColumns).map(k => {
       return({Header: yColumns[k], accessor: k })
@@ -201,14 +178,6 @@ function DataTable({width}) {
       cSet(val['accessor'], val['Header'])
     })
   },[])
-
-  // useEffect(() => {
-  //   console.log(columns)
-  // }, [columns])
-
-  // useEffect(() => {
-  //   console.log(yColumns)
-  // }, [yColumns])
 
   // Use the state and functions returned from useTable to build your UI
   const {
@@ -229,7 +198,7 @@ function DataTable({width}) {
 
   return (
     <Styles width={width}>
-      <GlobalControls collabs={collabs}/>
+      <GlobalControls collabs={collabs} columns={columns}/>
       <div className="tableWrap">
         <table {...getTableProps()}>
           <thead>
