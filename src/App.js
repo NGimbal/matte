@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import './App.css'
 
 import create from 'zustand'
@@ -27,14 +27,37 @@ const theme = {
   
 
 function App() {
+  const [orgs, setOrgs] = useState({
+    current:{
+        name:'Ennead',
+        key:'ennead-1234'
+      },
+    all: [{
+        name:'WSP',
+        key:'wsp-1234'
+      }, {
+        name:'KPF',
+        key:'kpf-1234'
+      }, {
+        name:'BIG',
+        key:'big-1234'
+      }]
+  })
+
+  const [projects, setProjs] = useState({
+    current:{name:'table2', key:'table2'},
+    all: [{name:'table1', key:'table1'}, 
+          {name:'table2', key:'table2'}, 
+          {name:'table3', key:'table3'}]
+  })
 
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
       <AppBar/>
       <div style={{display:'flex', flexDirection:'row', height:'calc(100% - 48px)'}}>
-        <Drawer width='15%'/>
-        <DataTable width='85%'/>
+        <Drawer width='15%' orgs={orgs} projects={projects} setProjs={setProjs}/>
+        <DataTable width='85%' project={projects.current} org={orgs.current}/>
       </div>
       </ThemeProvider>
     </div>

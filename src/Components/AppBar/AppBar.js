@@ -19,7 +19,7 @@ function AppBar() {
                  alignItems:'center',
                  justifyContent:'space-between'
                  }}>
-        <Heading size='700' color='white'>matte.</Heading>
+        <Heading size={700} color='white'>matte.</Heading>
         <div style={{display:'flex'}}>
           <Button appearance="minimal" height={40} style={{color:'white'}}>Search</Button>
           <Button appearance="minimal" height={40} style={{color:'white'}}>Organize</Button>

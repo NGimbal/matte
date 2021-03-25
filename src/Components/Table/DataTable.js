@@ -101,21 +101,25 @@ const connectDoc = (doc) => {
   // console.log('connect to a provider with room', doc.guid)
 
   // const wsProvider = new WebsocketProvider('wss://matte-server.herokuapp.com/', 'my-room4', doc)
-  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-room5', doc)
+  const wsProvider = new WebsocketProvider('ws://localhost:1234', 'all-orgs-1', doc)
   
   wsProvider.on('status', event => {
     console.log(event.status)
   })
 
-  awareProvider = wsProvider.awareness
+  if(typeof awareProvider === 'undefined'){
+    awareProvider = wsProvider.awareness
 
-  awareProvider.setLocalState({ 
-      color: chroma.random().hex(),
-      name: randomName(),
-      clientID: awareProvider.clientID
-    })
+    awareProvider.setLocalState({ 
+        color: chroma.random().hex(),
+        name: randomName(),
+        clientID: awareProvider.clientID
+      })
+  }
 
-  return () => console.log('disconnect', doc.guid)
+  return () => {
+    console.log('disconnect', doc.guid)
+  }
 }
 
 const useAwareness = (initAwareness) => {
@@ -158,26 +162,44 @@ const columnsInit = [
   }
 ]
 
-function DataTable({width}) {
-  const yDoc = useYDoc('docguid', connectDoc)
+function DataTable({width, project, org}) {
+  const yDoc = useYDoc('lala', connectDoc)
+  console.log(yDoc)
+  const {data, push: yPush, insert: yInsert} = useYArray(yDoc.getArray(project.key + '-array'))
   
-  const {data, push: yPush, insert: yInsert} = useYArray(yDoc.getArray('table1'))
-  
-  const {data: yColumns, set: cSet } = useYMap(yDoc.getMap('table1-columns'))
+  const {data: yColumns, set: cSet } = useYMap(yDoc.getMap(project.key + '-columns'))
 
   const [collabs, setAwareness] = useAwareness(awareProvider)
 
-  const columns = React.useMemo(() => 
-    Object.keys(yColumns).map(k => {
-      return({Header: yColumns[k], accessor: k })
-    })
-  ,[yColumns])
-
   useEffect(() => {
+    // console.log(project)
     columnsInit.map(val => {
       cSet(val['accessor'], val['Header'])
     })
-  },[])
+  },[project])
+  
+  // useEffect(() => {
+  //   console.log(yDoc)
+  // },[yDoc])
+
+  // useEffect(() => {
+  //   console.log(yColumns)
+  // },[yColumns])
+
+  const columns = React.useMemo(() => {
+    // console.log(yColumns)
+    return(Object.keys(yColumns).map(k => {
+      return({Header: yColumns[k], accessor: k })
+    }))}
+  ,[yColumns])
+
+  // useEffect(() => {
+  //   console.log(columns)
+  // },[columns])
+
+  // useEffect(() => {
+  //   console.log(data)
+  // },[data])
 
   // Use the state and functions returned from useTable to build your UI
   const {

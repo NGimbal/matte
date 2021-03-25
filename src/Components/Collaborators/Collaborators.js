@@ -9,7 +9,7 @@ function Collaborators({collabs}) {
   return (
     <div className="anim_container" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
       {collabs.map((friend, i) => {
-        return <Avatar className="anim_avatar" isSolid name={friend.name ? friend.name : "Anonymous Mouse"} size={36} style={{zIndex:i*-1}} />
+        return <Avatar className="anim_avatar" isSolid name={friend.name ? friend.name : "Anonymous Mouse"} size={36} style={{zIndex:i*-1}} key={friend.name.split(' ')[0]+i} />
       })}
     </div>
   );
