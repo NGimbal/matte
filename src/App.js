@@ -29,8 +29,8 @@ const theme = {
 function App() {
   const [orgs, setOrgs] = useState({
     current:{
-        name:'Ennead',
-        key:'ennead-1234'
+        name:'OMA',
+        key:'oma-1234'
       },
     all: [{
         name:'WSP',

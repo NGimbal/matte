@@ -12,14 +12,15 @@ import {
   TickCircleIcon, 
   TranslateIcon,
   Menu,
-  TextDropdownButton,
+  Button,
   Position,
-  TextInput
+  TextInput,
+  ChevronDownIcon
   } from 'evergreen-ui'
 
 const fields = [
   'Header',
-  'ToggleShow',
+  'Show/Hide',
   'Type',
 ]
 
@@ -37,14 +38,15 @@ function SchemaEdit({columns, yColumn}) {
       </Table.Head>
       <Table.Body>
         {columns.map(col => 
-          <Table.Row key={col['accessor']}>
+          <Table.Row key={col.id}>
             <Table.TextCell>
               <TextInput
-                name={col['Header'] + '-input'}
-                value={col['Header']}
+                name={col.id + '-input'}
+                value={col.Header}
+                width="100%"
               />
             </Table.TextCell>
-            <Table.TextCell><Switch/></Table.TextCell>
+            <Table.Cell ><Switch {...col.getToggleHiddenProps()} checked={col.isVisible}/></Table.Cell>
             <Table.TextCell>
               <Popover
                 position={Position.BOTTOM_LEFT}
@@ -59,16 +61,12 @@ function SchemaEdit({columns, yColumn}) {
                     </Menu.Group>
                   </Menu>
                 }>
-                <TextDropdownButton
-                  iconAfter={CodeIcon}
-                  style={{
-                    width:'calc(100% - 20px)',
-                    justifyContent:'space-between',
-                    padding:'0px 10px',
-                  }}
+                <Button
+                  iconAfter={ChevronDownIcon}
+                  appearance="minimal"
                 >
                   Type
-                </TextDropdownButton>
+                </Button>
               </Popover>
             </Table.TextCell>
           </Table.Row>  

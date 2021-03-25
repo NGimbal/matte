@@ -164,7 +164,7 @@ const columnsInit = [
 
 function DataTable({width, project, org}) {
   const yDoc = useYDoc('lala', connectDoc)
-  console.log(yDoc)
+
   const {data, push: yPush, insert: yInsert} = useYArray(yDoc.getArray(project.key + '-array'))
   
   const {data: yColumns, set: cSet } = useYMap(yDoc.getMap(project.key + '-columns'))
@@ -177,14 +177,6 @@ function DataTable({width, project, org}) {
       cSet(val['accessor'], val['Header'])
     })
   },[project])
-  
-  // useEffect(() => {
-  //   console.log(yDoc)
-  // },[yDoc])
-
-  // useEffect(() => {
-  //   console.log(yColumns)
-  // },[yColumns])
 
   const columns = React.useMemo(() => {
     // console.log(yColumns)
@@ -192,14 +184,6 @@ function DataTable({width, project, org}) {
       return({Header: yColumns[k], accessor: k })
     }))}
   ,[yColumns])
-
-  // useEffect(() => {
-  //   console.log(columns)
-  // },[columns])
-
-  // useEffect(() => {
-  //   console.log(data)
-  // },[data])
 
   // Use the state and functions returned from useTable to build your UI
   const {
@@ -209,6 +193,8 @@ function DataTable({width, project, org}) {
     rows,
     prepareRow,
     state: { groupBy, expanded },
+    allColumns,
+    getToggleHideAllColumnsProps,
   } = useTable(
     {
       columns,
@@ -220,7 +206,7 @@ function DataTable({width, project, org}) {
 
   return (
     <Styles width={width}>
-      <GlobalControls collabs={collabs} columns={columns}/>
+      <GlobalControls collabs={collabs} columns={allColumns}/>
       <div className="tableWrap">
         <table {...getTableProps()}>
           <thead>
